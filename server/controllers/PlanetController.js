@@ -1,15 +1,17 @@
 import express from 'express'
 import PlanetService from '../services/PlanetService';
 import { Authorize } from '../middleware/authorize.js'
+import MoonService from '../services/MoonService';
 
 let _planetService = new PlanetService().repository
-
+let _moonService = new MoonService().repository
 export default class PlanetController {
     constructor() {
         this.router = express.Router()
             //NOTE all routes after the authenticate method will require the user to be logged in to access
             .get('', this.getAll)
             .get('/:id', this.getById)
+            .get('/:id/moons', this.getMoons)
             .use(Authorize.authenticated)
             .post('', this.create)
             .put('/:id', this.edit)
@@ -31,6 +33,13 @@ export default class PlanetController {
                 throw new Error("Invalid Id")
             }
             res.send(data)
+        } catch (error) { next(error) }
+    }
+
+    async getMoons(req, res, next) {
+        try {
+            let data = await _moonService.find({ planetId: req.params.id })
+            return res.send(data)
         } catch (error) { next(error) }
     }
 
