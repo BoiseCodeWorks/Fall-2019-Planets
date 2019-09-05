@@ -38,7 +38,8 @@ export default class PlanetController {
 
     async getMoons(req, res, next) {
         try {
-            let data = await _moonService.find({ planetId: req.params.id })
+            let data = await _moonService.find({ planetId: req.params.id }).populate ("planetId", "name")
+
             return res.send(data)
         } catch (error) { next(error) }
     }
