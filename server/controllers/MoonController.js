@@ -45,7 +45,7 @@ export default class MoonController {
 
     async edit(req, res, next) {
         try {
-            let data = await _moonService.findOneAndUpdate({ _id: req.params.id, }, req.body, { new: true })
+            let data = await _moonService.findOneAndUpdate({ _id: req.params.id, creatorId: req.session.uid }, req.body, { new: true })
             if (data) {
                 return res.send(data)
             }
@@ -57,7 +57,7 @@ export default class MoonController {
 
     async delete(req, res, next) {
         try {
-            await _moonService.findOneAndRemove({ _id: req.params.id })
+            await _moonService.findOneAndRemove({ _id: req.params.id, creatorId: req.session.uid })
             res.send("deleted value")
         } catch (error) { next(error) }
 

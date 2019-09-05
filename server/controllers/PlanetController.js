@@ -38,7 +38,7 @@ export default class PlanetController {
 
     async getMoons(req, res, next) {
         try {
-            let data = await _moonService.find({ planetId: req.params.id }).populate ("planetId", "name")
+            let data = await _moonService.find({ planetId: req.params.id }).populate("planetId", "name")
 
             return res.send(data)
         } catch (error) { next(error) }
@@ -55,7 +55,7 @@ export default class PlanetController {
 
     async edit(req, res, next) {
         try {
-            let data = await _planetService.findOneAndUpdate({ _id: req.params.id, }, req.body, { new: true })
+            let data = await _planetService.findOneAndUpdate({ _id: req.params.id, creatorId: req.session.uid }, req.body, { new: true })
             if (data) {
                 return res.send(data)
             }
@@ -67,7 +67,10 @@ export default class PlanetController {
 
     async delete(req, res, next) {
         try {
-            await _planetService.findOneAndRemove({ _id: req.params.id })
+            let data = await _planetService.findOneAndRemove({ _id: req.params.id, creatorId: req.session.uid })
+            if (!data) {
+                throw new Error("invalid id, you didn't say the magic word")
+            }
             res.send("deleted value")
         } catch (error) { next(error) }
 
