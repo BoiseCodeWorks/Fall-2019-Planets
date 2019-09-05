@@ -4,13 +4,13 @@ const ObjectId = Schema.Types.ObjectId
 
 const _model = new Schema({
     name: { type: String, required: true },
-    habitable: { type: Boolean, required: true },
-    population: { type: Number, required: true },
+    size: { type: Number, required: true },
+    planetId: { type: ObjectId, ref: 'planet', required: true },
     creatorId: { type: ObjectId, ref: 'User', required: true }
 }, { timestamps: true })
 
-export default class PlanetService {
+export default class MoonService {
     get repository() {
-        return mongoose.model('planet', _model)
+        return mongoose.model('moon', _model)
     }
 }

@@ -37,7 +37,7 @@ export default class PlanetController {
     async create(req, res, next) {
         try {
             //NOTE the user id is accessable through req.body.uid, never trust the client to provide you this information
-            req.body.authorId = req.session.uid
+            req.body.creatorId = req.session.uid
             let data = await _planetService.create(req.body)
             res.send(data)
         } catch (error) { next(error) }

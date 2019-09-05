@@ -43,9 +43,11 @@ server.use('/account', new AuthController().router)
 
 //NOTE we have to import access to our controllers
 import PlanetController from './controllers/PlanetController'
+import MoonController from './controllers/MoonController'
 
 //NOTE remember the forward slash at the start of your path!
 server.use('/api/planets', new PlanetController().router)
+server.use('/api/moons', new MoonController().router)
 
 
 
