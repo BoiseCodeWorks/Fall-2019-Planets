@@ -1,11 +1,11 @@
 import express from 'express'
 import PlanetService from '../services/PlanetService';
 import { Authorize } from '../middleware/authorize.js'
-import MoonService from '../services/MoonService';
+import SatelliteService from '../services/SatelliteService';
 import CompanyService from '../services/CompanyService.js'
 
 let _planetService = new PlanetService().repository
-let _moonService = new MoonService().repository
+let _satelliteService = new SatelliteService().repository
 let _companyService = new CompanyService().repository
 export default class CompanyController {
     constructor() {
@@ -13,11 +13,19 @@ export default class CompanyController {
             //NOTE all routes after the authenticate method will require the user to be logged in to access
             .get('', this.getAll)
             .get('/:id', this.getById)
-            .get('/:id/satellite', this.getMoons)
+            .get('/:id/satellites', this.getSatellites)
             .use(Authorize.authenticated)
             .post('', this.create)
             .put('/:id', this.edit)
             .delete('/:id', this.delete)
+    }
+
+    async getSatellites(req, res, next) {
+        try {
+            let data = await _satelliteService.find({ companyId: req.params.id }).populate("companyId", "name")
+
+            return res.send(data)
+        } catch (error) { next(error) }
     }
 
     async getAll(req, res, next) {
