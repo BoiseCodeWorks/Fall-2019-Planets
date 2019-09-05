@@ -14,10 +14,21 @@ export default class SatelliteController {
             //NOTE all routes after the authenticate method will require the user to be logged in to access
             .get('', this.getAll)
             .get('/:id', this.getById)
-            .get('/:id/', this.getMoons)
             .use(Authorize.authenticated)
             .post('', this.create)
             .put('/:id', this.edit)
             .delete('/:id', this.delete)
+    }
+
+    async getById(req, res, next) {
+
+        try {
+            let data = await _satelliteService.findById(req.params.id)
+            if (!data) {
+                throw new Error("HA THAT DOESN'T EXSIT!")
+            }
+            res.send(data)
+        }
+        catch (error) { next(error) }
     }
 }
