@@ -2,9 +2,12 @@ import express from 'express'
 import PlanetService from '../services/PlanetService';
 import { Authorize } from '../middleware/authorize.js'
 import MoonService from '../services/MoonService';
+import SatelliteService from '../services/SatelliteService';
 
 let _planetService = new PlanetService().repository
 let _moonService = new MoonService().repository
+let _satService = new SatelliteService().repository
+
 export default class PlanetController {
     constructor() {
         this.router = express.Router()
@@ -12,6 +15,7 @@ export default class PlanetController {
             .get('', this.getAll)
             .get('/:id', this.getById)
             .get('/:id/moons', this.getMoons)
+            .get('/:id/satellites', this.getSatellites)
             .use(Authorize.authenticated)
             .post('', this.create)
             .put('/:id', this.edit)
@@ -43,6 +47,16 @@ export default class PlanetController {
             return res.send(data)
         } catch (error) { next(error) }
     }
+
+
+    async getSatellites(req, res, next) {
+        try {
+            let data = await _satService.find({ planetId: req.params.id }).populate("planetId", "name")
+
+            return res.send(data)
+        } catch (error) { next(error) }
+    }
+
 
     async create(req, res, next) {
         try {
